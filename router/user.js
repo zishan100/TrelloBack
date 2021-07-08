@@ -5,11 +5,12 @@ const ListSchema = require('../models/trello');
 
 router.post('/createtitle', (req, res, next) => {
         
-    let {title} = req.body;
+    let {title,status} = req.body;
        
     const list = new ListSchema({
         id:uuidv4(),
-        title:title
+        title: title,
+        status:status
     })
     
     list.save()
@@ -32,7 +33,7 @@ router.get('/getlist/', (req, res, next) => {
        
     
     ListSchema.find()
-        .select('id title')
+        .select('id title status')
         .then(list => {
             
           return res.status(200).json({
@@ -45,6 +46,41 @@ router.get('/getlist/', (req, res, next) => {
        
 
 });
+router.post('/updatingStatus/',(req,res,next) => {
+     
+    let {status,id} = req.body;
+        
+    ListSchema.findOne({id:id})
+      .then(list => {
+          if (!list) {
+              return;
+           }
+          
+          list.status = status;
+          
+          return list.save();
+          
+      }).then(result => {
+            
+          if (!result) {
+             
+              return res.status(201).json({
+                  result:'No list found' 
+              }) 
+           }
+          console.log(result);
+          res.status(200).json({
+             result:result 
+         }) 
+          
+      })
+       .catch(err => {
+          console.log(err);
+      })
+
+
+
+})
 
 
 module.exports = router;

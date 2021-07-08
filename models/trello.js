@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 
 const ListSchema = new mongoose.Schema({
-       id:String,
+       id: String,
+       status:String,
        title: String,
 }, {timestamps: true });
 
